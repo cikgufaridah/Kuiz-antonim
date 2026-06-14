@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kuiz Antonim Tahun 6</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #7c3aed, #06b6d4, #22c55e);
+      color: #1f2937;
+      overflow-x: hidden;
+    }
+    .bg-bubbles span {
+      position: fixed;
+      bottom: -80px;
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,.25);
+      border-radius: 50%;
+      animation: rise 12s linear infinite;
+      z-index: 0;
+    }
+    .bg-bubbles span:nth-child(1){left:5%; animation-delay:0s;}
+    .bg-bubbles span:nth-child(2){left:20%; width:70px;height:70px; animation-delay:2s;}
+    .bg-bubbles span:nth-child(3){left:45%; animation-delay:4s;}
+    .bg-bubbles span:nth-child(4){left:70%; width:55px;height:55px; animation-delay:1s;}
+    .bg-bubbles span:nth-child(5){left:88%; animation-delay:3s;}
+    @keyframes rise {
+      from { transform: translateY(0) rotate(0deg); opacity:.5; }
+      to { transform: translateY(-110vh) rotate(360deg); opacity:0; }
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+      width: min(980px, 94%);
+      margin: 28px auto;
+      background: rgba(255,255,255,.94);
+      border-radius: 28px;
+      box-shadow: 0 22px 60px rgba(0,0,0,.25);
+      padding: 28px;
+      border: 5px solid rgba(255,255,255,.55);
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 46px);
+      text-align: center;
+      color: #4c1d95;
+      text-shadow: 1px 2px #fde68a;
+    }
+    .subtitle {
+      text-align: center;
+      font-weight: 700;
+      color: #0f766e;
+      margin: 8px 0 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.12);
+      border: 3px solid #fde68a;
+    }
+    label { font-weight: 800; color: #374151; }
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      margin: 8px 0 16px;
+      border: 3px solid #a78bfa;
+      border-radius: 16px;
+      font-size: 18px;
+      outline: none;
+    }
+    input:focus { border-color: #06b6d4; box-shadow: 0 0 0 4px rgba(6,182,212,.18); }
+    button {
+      border: none;
+      border-radius: 18px;
+      padding: 14px 22px;
+      font-size: 17px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 6px 14px rgba(0,0,0,.18);
+    }
+    button:hover { transform: translateY(-2px); }
+    .btn-primary { background: linear-gradient(135deg,#f97316,#facc15); color:#3b0764; }
+    .btn-green { background: linear-gradient(135deg,#22c55e,#86efac); color:#064e3b; }
+    .btn-blue { background: linear-gradient(135deg,#06b6d4,#93c5fd); color:#082f49; }
+    .btn-red { background: linear-gradient(135deg,#ef4444,#fb7185); color:white; }
+    .btn-purple { background: linear-gradient(135deg,#7c3aed,#c084fc); color:white; }
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr 120px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .pill {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: #ecfeff;
+      font-weight: 900;
+      text-align: center;
+      border: 2px solid #67e8f9;
+    }
+    .timer {
+      width: 105px; height: 105px;
+      border-radius: 50%;
+      display:flex; align-items:center; justify-content:center;
+      margin: auto;
+      background: conic-gradient(#22c55e 360deg, #e5e7eb 0);
+      font-size: 36px;
+      color:#111827;
+      font-weight: 1000;
+      border: 7px solid white;
+      box-shadow: 0 8px 20px rgba(0,0,0,.18);
+    }
+    .progress-wrap {
+      width: 100%;
+      background: #e5e7eb;
+      border-radius: 99px;
+      height: 18px;
+      overflow: hidden;
+      margin: 15px 0;
+      border: 2px solid #fff;
+    }
+    .progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg,#22c55e,#facc15,#f97316);
+      border-radius: 99px;
+      transition: width .3s;
+    }
+    .question {
+      font-size: clamp(22px, 3vw, 31px);
+      line-height: 1.55;
+      text-align: center;
+      font-weight: 750;
+      color:#111827;
+      margin: 22px 0;
+    }
+    .highlight {
+      color: #dc2626;
+      font-weight: 1000;
+      text-decoration: underline;
+      text-decoration-thickness: 4px;
+      text-underline-offset: 5px;
+      background: #fef3c7;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .answer-box {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .feedback {
+      min-height: 40px;
+      text-align: center;
+      font-weight: 1000;
+      font-size: 22px;
+      margin-top: 14px;
+    }
+    .correct { color:#15803d; }
+    .wrong { color:#dc2626; }
+    .hidden { display:none !important; }
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .result-box {
+      border-radius: 22px;
+      padding: 20px;
+      text-align: center;
+      background: #fef9c3;
+      border: 3px solid #facc15;
+      font-weight: 900;
+    }
+    .result-box .big { font-size: 38px; color:#7c2d12; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    th, td {
+      border: 1px solid #e5e7eb;
+      padding: 10px;
+      text-align: left;
+      font-size: 14px;
+    }
+    th { background: #ede9fe; color:#4c1d95; }
+    .teacher-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 18px 0 0;
+    }
+    .small-note { font-size: 14px; color:#6b7280; text-align:center; }
+    .shake { animation: shake .25s; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+    .pop { animation: pop .3s; }
+    @keyframes pop { 0%{transform:scale(.9)} 70%{transform:scale(1.06)} 100%{transform:scale(1)} }
+  </style>
+</head>
+<body>
+  <div class="bg-bubbles"><span></span><span></span><span></span><span></span><span></span></div>
+
+  <div class="container">
+    <h1>Kuiz Antonim</h1>
+    <div class="subtitle">Bahasa Melayu Tahun 6 • Kata Berlawan • 35 Soalan</div>
+
+    <section id="startScreen" class="card">
+      <h2>Maklumat Murid</h2>
+      <label>Nama Murid</label>
+      <input id="studentName" placeholder="Taip nama murid..." autocomplete="off">
+      <label>Kelas</label>
+      <input id="studentClass" placeholder="Contoh: Tahun 6 Amanah" autocomplete="off">
+      <button class="btn-primary" onclick="startQuiz()">Mula Kuiz</button>
+      <div class="teacher-bar">
+        <button class="btn-purple" onclick="openTeacherLogin()">Panel Guru</button>
+      </div>
+      <p class="small-note">Timer: 15 saat setiap soalan. Jawapan boleh ditaip huruf besar atau kecil.</p>
+    </section>
+
+    <section id="quizScreen" class="card hidden">
+      <div class="topbar">
+        <div class="pill" id="qNumber">Soalan 1/35</div>
+        <div class="timer" id="timer">15</div>
+        <div class="pill" id="scorePill">Markah: 0</div>
+      </div>
+      <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+      <div class="question" id="questionText"></div>
+      <div class="answer-box">
+        <input id="answerInput" placeholder="Taip jawapan di sini..." autocomplete="off" onkeydown="if(event.key==='Enter')checkAnswer()">
+        <button class="btn-green" style="width:100%" onclick="checkAnswer()">Hantar Jawapan</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+    </section>
+
+    <section id="resultScreen" class="card hidden">
+      <h2 style="text-align:center;color:#4c1d95;">Keputusan Kuiz</h2>
+      <div class="result-grid">
+        <div class="result-box">Markah<br><span class="big" id="finalScore">0/35</span></div>
+        <div class="result-box">Peratus<br><span class="big" id="finalPercent">0%</span></div>
+        <div class="result-box">Gred<br><span class="big" id="finalGrade">E</span></div>
+        <div class="result-box">Betul / Salah<br><span class="big" id="rightWrong">0 / 0</span></div>
+      </div>
+      <div class="teacher-bar">
+        <button class="btn-primary" onclick="restartQuiz()">Cuba Lagi</button>
+        <button class="btn-purple" onclick="openTeacherLogin()">Panel Guru</button>
+      </div>
+    </section>
+
+    <section id="teacherLogin" class="card hidden">
+      <h2>Panel Guru</h2>
+      <label>Kata Laluan Guru</label>
+      <input id="teacherPassword" type="password" placeholder="Masukkan password">
+      <button class="btn-purple" onclick="checkTeacherPassword()">Buka Panel</button>
+      <button class="btn-red" onclick="backHome()">Kembali</button>
+      <div class="feedback" id="teacherFeedback"></div>
+    </section>
+
+    <section id="teacherPanel" class="card hidden">
+      <h2>Rekod Markah Murid</h2>
+      <input id="searchBox" placeholder="Cari nama atau kelas..." oninput="renderRecords()">
+      <div class="teacher-bar">
+        <button class="btn-blue" onclick="exportCSV()">Eksport CSV</button>
+        <button class="btn-red" onclick="clearRecords()">Padam Semua Rekod</button>
+        <button class="btn-primary" onclick="backHome()">Kembali</button>
+      </div>
+      <div id="recordTable"></div>
+    </section>
+  </div>
+
+<script>
+const questions = [
+  {q:'Burung keluar mencari makan pada waktu <span class="highlight">subuh</span> dan pulang ke sarangnya pada waktu _________.', a:['senja']},
+  {q:'Nelayan-nelayan tidak berani turun ke laut ketika laut <span class="highlight">bergelora</span>. Mereka akan turun ke laut apabila laut ___________.', a:['tenang']},
+  {q:'Tinggalkan pekerjaan yang <span class="highlight">sia-sia</span> dan buatlah pekerjaan yang ber___________.', a:['faedah','berfaedah']},
+  {q:'Negara bertambah maju andai <span class="highlight">rakyat</span> bekerjasama dengan _____________.', a:['raja','sultan']},
+  {q:'Untuk melihat pameran itu <span class="highlight">kanak-kanak</span> dikenakan bayaran $2.00 seorang dan $5.00 seorang untuk orang _____________.', a:['dewasa']},
+  {q:'Orang Islam digalakkan bersikap __________ dan tidak bersikap <span class="highlight">sombong</span>.', a:['peramah','ramah']},
+  {q:'Negara ini <span class="highlight">mengeksport</span> gas ke Jepun dan meng_________ beras dari Thailand.', a:['import','mengimport']},
+  {q:'Rabiatul suka membeli sayur yang __________ daripada sayur yang <span class="highlight">layu</span>.', a:['segar']},
+  {q:'Menyimpan duit _______ itu lama-kelamaan akan menjadi <span class="highlight">banyak</span>.', a:['sedikit']},
+  {q:'Tharaa merupakan kanak-kanak <span class="highlight">cergas</span> tetapi Mahmud kanak-kanak ________.', a:['lembam']},
+  {q:'Nelayan itu akan pulang sebelum waktu <span class="highlight">petang</span> setelah pergi ke laut pada waktu ___________.', a:['pagi']},
+  {q:'Abangnya <span class="highlight">gagap</span> tetapi adiknya ___________ berbahasa Inggeris.', a:['lancar','fasih']},
+  {q:'Jiran saya, Rahman seorang <span class="highlight">biduan</span> dan adiknya Ghinar seorang ________.', a:['biduanita']},
+  {q:'Pilihlah barang-barang <span class="highlight">asli</span>, jangan pilih barang-barang ________.', a:['tiruan']},
+  {q:'Pengembara itu terpaksa <span class="highlight">mendaki</span> dan ____________ bukit untuk sampai ke tasik bersejarah itu.', a:['menuruni','menurun']},
+  {q:'Rumah <span class="highlight">usang</span> yang terletak di hujung kampung itu telah diroboh dan digantikan dengan bangunan yang ____________.', a:['baharu','baru']},
+  {q:'Rania tidak tahu bahagian <span class="highlight">hujung</span> dan ___________ kayu itu.', a:['pangkal']},
+  {q:'Jurulatih acara senaman itu mengarahkan peserta <span class="highlight">mendongakkan</span> kepalanya, kemudian __________ kepala mereka.', a:['menundukkan','menunduk']},
+  {q:'Seluar yang dipakai Mizan tidak lagi <span class="highlight">sempit</span> malahan menjadi ___________ setelah berat badannya menurun.', a:['longgar']},
+  {q:'Kedai runcit Awang Razi yang dahulu <span class="highlight">mundur</span> kini semakin ________ disebabkan usaha yang gigih.', a:['maju']},
+  {q:'Sikap <span class="highlight">berjimat</span> merupakan amalan yang terpuji tetapi sikap ____________ tidak digalakkan oleh agama Islam.', a:['boros']},
+  {q:'Pada masa ini negara kita mengalami musim <span class="highlight">kemarau</span> dan bulan Disember nanti dijangkakan berlaku musim _________.', a:['tengkujuh']},
+  {q:'Sains dan teknologi lebih banyak mendatangkan <span class="highlight">kebaikan</span> daripada __________.', a:['keburukan']},
+  {q:'Qawi mencuci kereta ayahnya yang <span class="highlight">kotor</span> itu sehingga __________.', a:['bersih']},
+  {q:'Afifah tidak suka membeli barang-barang secara <span class="highlight">berhutang</span>, sebaliknya dia membayar secara _________.', a:['tunai']},
+  {q:'Hazim yang berasal dari <span class="highlight">pedalaman</span> pergi ke ________ untuk mencari pekerjaan.', a:['bandar']},
+  {q:'Ais kiub yang <span class="highlight">beku</span> itu menjadi ________ apabila dicampur dengan air panas.', a:['cair']},
+  {q:'Kita hendaklah menolong orang dengan hati yang _________ bukan kerana <span class="highlight">terpaksa</span>.', a:['ikhlas','rela']},
+  {q:'Kucing yang <span class="highlight">liar</span> itu menjadi _________ setelah diberi makanan.', a:['jinak']},
+  {q:'Keadaan cuaca yang _________ tiba-tiba menjadi <span class="highlight">gelap</span> apabila hujan turun dengan lebatnya.', a:['cerah','terang']},
+  {q:'Anak yang <span class="highlight">derhaka</span> mendapat dosa tetapi anak yang _______ akan mendapat pahala.', a:['taat']},
+  {q:'Sikap <span class="highlight">berjimat</span> merupakan amalan yang terpuji tetapi sikap _________ perlu dielakkan kerana boleh merugikan diri sendiri.', a:['membazir','boros']},
+  {q:'Tanah itu <span class="highlight">digali</span> terlebih dahulu, kemudian di________ setelah dimasukkan biji benih.', a:['timbus','ditimbus']},
+  {q:'Penggunaan kaedah <span class="highlight">moden</span> telah dapat meningkatkan hasil pertanian berbanding dengan kaedah __________.', a:['tradisional']},
+  {q:'Osman sering <span class="highlight">dipuji</span> oleh ketuanya kerana menjalankan tugas tanpa mengira masa. Rahman pula __________ kerana malas, curi tulang dan cuai membuat kerja yang diarahkan.', a:['dihina','dicaci']}
+];
+
+let current = 0, score = 0, wrong = 0, timer = 15, timerInterval = null;
+let studentName = '', studentClass = '', answered = false;
+
+function normalize(text){
+  return text.toLowerCase().trim()
+    .replace(/\s+/g,' ')
+    .replace(/[.,!?;:]/g,'');
+}
+
+function playTone(type){
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  if(type === 'correct'){
+    osc.frequency.setValueAtTime(660, audioCtx.currentTime);
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime + .12);
+  } else {
+    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+    osc.frequency.setValueAtTime(150, audioCtx.currentTime + .12);
+  }
+  gain.gain.setValueAtTime(.08, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + .35);
+  osc.start(); osc.stop(audioCtx.currentTime + .35);
+}
+
+function showOnly(id){
+  ['startScreen','quizScreen','resultScreen','teacherLogin','teacherPanel'].forEach(x => document.getElementById(x).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function startQuiz(){
+  studentName = document.getElementById('studentName').value.trim();
+  studentClass = document.getElementById('studentClass').value.trim();
+  if(!studentName || !studentClass){
+    alert('Sila isi nama murid dan kelas dahulu.');
+    return;
+  }
+  current = 0; score = 0; wrong = 0;
+  showOnly('quizScreen');
+  loadQuestion();
+}
+
+function loadQuestion(){
+  answered = false;
+  clearInterval(timerInterval);
+  timer = 15;
+  document.getElementById('timer').textContent = timer;
+  document.getElementById('timer').style.background = 'conic-gradient(#22c55e 360deg, #e5e7eb 0)';
+  document.getElementById('qNumber').textContent = `Soalan ${current+1}/${questions.length}`;
+  document.getElementById('scorePill').textContent = `Markah: ${score}`;
+  document.getElementById('questionText').innerHTML = questions[current].q;
+  document.getElementById('answerInput').value = '';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('progress').style.width = `${(current/questions.length)*100}%`;
+  document.getElementById('answerInput').focus();
+
+  timerInterval = setInterval(() => {
+    timer--;
+    document.getElementById('timer').textContent = timer;
+    const deg = (timer/15)*360;
+    const color = timer <= 5 ? '#ef4444' : timer <= 9 ? '#f97316' : '#22c55e';
+    document.getElementById('timer').style.background = `conic-gradient(${color} ${deg}deg, #e5e7eb 0)`;
+    if(timer <= 0){
+      clearInterval(timerInterval);
+      markWrong(true);
+    }
+  }, 1000);
+}
+
+function checkAnswer(){
+  if(answered) return;
+  const userAns = normalize(document.getElementById('answerInput').value);
+  if(!userAns){
+    document.getElementById('feedback').textContent = 'Sila taip jawapan dahulu.';
+    document.getElementById('feedback').className = 'feedback wrong';
+    return;
+  }
+  clearInterval(timerInterval);
+  const accepted = questions[current].a.map(normalize);
+  if(accepted.includes(userAns)){
+    answered = true;
+    score++;
+    playTone('correct');
+    document.getElementById('feedback').textContent = 'Betul! Hebat!';
+    document.getElementById('feedback').className = 'feedback correct pop';
+    setTimeout(nextQuestion, 850);
+  } else {
+    markWrong(false);
+  }
+}
+
+function markWrong(timeout){
+  if(answered) return;
+  answered = true;
+  wrong++;
+  playTone('wrong');
+  const ans = questions[current].a.join(' / ');
+  document.getElementById('feedback').textContent = timeout ? `Masa tamat! Jawapan: ${ans}` : `Kurang tepat. Jawapan: ${ans}`;
+  document.getElementById('feedback').className = 'feedback wrong shake';
+  setTimeout(nextQuestion, 1300);
+}
+
+function nextQuestion(){
+  current++;
+  if(current >= questions.length){
+    finishQuiz();
+  } else {
+    loadQuestion();
+  }
+}
+
+function getGrade(percent){
+  if(percent >= 80) return 'A';
+  if(percent >= 65) return 'B';
+  if(percent >= 50) return 'C';
+  if(percent >= 40) return 'D';
+  return 'E';
+}
+
+function finishQuiz(){
+  clearInterval(timerInterval);
+  const percent = Math.round((score/questions.length)*100);
+  const grade = getGrade(percent);
+  document.getElementById('finalScore').textContent = `${score}/${questions.length}`;
+  document.getElementById('finalPercent').textContent = `${percent}%`;
+  document.getElementById('finalGrade').textContent = grade;
+  document.getElementById('rightWrong').textContent = `${score} / ${wrong}`;
+  document.getElementById('progress').style.width = '100%';
+
+  const record = {
+    name: studentName,
+    className: studentClass,
+    score,
+    total: questions.length,
+    percent,
+    grade,
+    wrong,
+    date: new Date().toLocaleString('ms-BN')
+  };
+  const records = JSON.parse(localStorage.getItem('antonim_records') || '[]');
+  records.push(record);
+  localStorage.setItem('antonim_records', JSON.stringify(records));
+  showOnly('resultScreen');
+}
+
+function restartQuiz(){
+  showOnly('startScreen');
+}
+
+function openTeacherLogin(){
+  showOnly('teacherLogin');
+  document.getElementById('teacherPassword').value = '';
+  document.getElementById('teacherFeedback').textContent = '';
+}
+
+function checkTeacherPassword(){
+  const pass = document.getElementById('teacherPassword').value;
+  if(pass === '12345'){
+    showOnly('teacherPanel');
+    renderRecords();
+  } else {
+    document.getElementById('teacherFeedback').textContent = 'Password salah.';
+    document.getElementById('teacherFeedback').className = 'feedback wrong';
+  }
+}
+
+function renderRecords(){
+  const records = JSON.parse(localStorage.getItem('antonim_records') || '[]')
+    .sort((a,b) => b.percent - a.percent || b.score - a.score);
+  const search = normalize(document.getElementById('searchBox')?.value || '');
+  const filtered = records.filter(r => normalize(r.name).includes(search) || normalize(r.className).includes(search));
+  if(filtered.length === 0){
+    document.getElementById('recordTable').innerHTML = '<p class="small-note">Belum ada rekod markah.</p>';
+    return;
+  }
+  let html = '<table><thead><tr><th>Bil</th><th>Nama</th><th>Kelas</th><th>Markah</th><th>Peratus</th><th>Gred</th><th>Salah</th><th>Tarikh/Masa</th></tr></thead><tbody>';
+  filtered.forEach((r,i) => {
+    html += `<tr><td>${i+1}</td><td>${r.name}</td><td>${r.className}</td><td>${r.score}/${r.total}</td><td>${r.percent}%</td><td>${r.grade}</td><td>${r.wrong}</td><td>${r.date}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('recordTable').innerHTML = html;
+}
+
+function exportCSV(){
+  const records = JSON.parse(localStorage.getItem('antonim_records') || '[]');
+  if(records.length === 0){ alert('Belum ada rekod untuk dieksport.'); return; }
+  const header = ['Nama','Kelas','Markah','Jumlah','Peratus','Gred','Salah','Tarikh/Masa'];
+  const rows = records.map(r => [r.name,r.className,r.score,r.total,r.percent,r.grade,r.wrong,r.date]);
+  const csv = [header, ...rows].map(row => row.map(x => `"${String(x).replaceAll('"','""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'markah_kuiz_antonim_tahun6.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function clearRecords(){
+  if(confirm('Padam semua rekod markah?')){
+    localStorage.removeItem('antonim_records');
+    renderRecords();
+  }
+}
+
+function backHome(){
+  showOnly('startScreen');
+}
+</script>
+</body>
+</html>
